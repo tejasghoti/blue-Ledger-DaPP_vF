@@ -1,0 +1,9 @@
+{
+  "name": "blue-ledger-monorepo",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "build": "npm --prefix blue-ledger-ai-verifier install && npm --prefix blue-ledger-ai-verifier run build",
+    "dev": "npm --prefix blue-ledger-ai-verifier run dev"
+  }
+}
