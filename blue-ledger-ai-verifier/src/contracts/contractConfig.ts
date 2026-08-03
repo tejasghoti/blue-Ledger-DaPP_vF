@@ -977,5 +977,27 @@ export const contractAbi = [
         "internalType": "address"
       }
     ]
+  },
+  {
+    "type": "function",
+    "name": "retireCredits",
+    "inputs": [
+      { "name": "_projectId", "type": "uint256", "internalType": "uint256" },
+      { "name": "_amount", "type": "uint256", "internalType": "uint256" },
+      { "name": "_memo", "type": "string", "internalType": "string" }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "event",
+    "name": "CreditsRetired",
+    "inputs": [
+      { "name": "beneficiary", "type": "address", "indexed": true, "internalType": "address" },
+      { "name": "projectId", "type": "uint256", "indexed": true, "internalType": "uint256" },
+      { "name": "amount", "type": "uint256", "indexed": false, "internalType": "uint256" },
+      { "name": "memo", "type": "string", "indexed": false, "internalType": "string" }
+    ],
+    "anonymous": false
   }
 ] as const;

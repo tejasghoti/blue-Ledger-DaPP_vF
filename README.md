@@ -1,23 +1,91 @@
-Blue Ledger: A Decentralized Blue Carbon Registry
-Blue Ledger is a full-stack decentralized application (dApp) designed to bring unparalleled trust, transparency, and efficiency to the blue carbon credit market. By leveraging blockchain technology, we address the critical need for a verifiable and immutable system for Monitoring, Reporting, and Verification (MRV) of coastal ecosystem restoration projects.
+# 🌊 Blue Ledger: Decentralized Blue Carbon Registry & AI Verification Platform
 
-Our platform connects on-the-ground organizations like NGOs and local communities with verifiers and climate finance, creating a seamless pipeline from verified carbon sequestration to tokenized, market-ready carbon credits.
+**Blue Ledger** is an enterprise-grade, full-stack decentralized Web3 application designed to bring end-to-end transparency, cryptographic trust, and efficiency to the blue carbon credit market. By combining **Polygon Smart Contracts (ERC-1155)**, **Gemini Multi-modal AI Telemetry**, and **Decentralized Storage (IPFS)**, Blue Ledger streamlines coastal mangrove restoration verification and carbon trading.
 
-Core Features
+---
 
-Immutable On-Chain Registry: All project data, from initial registration to final verification, is stored immutably on the Polygon blockchain, creating a permanent and tamper-proof audit trail.
+## 🌟 Key Features & Enterprise Capabilities
 
-Role-Based Access Control: A secure, smart contract-governed system with a designated Admin (NCCR) for verifying projects and authorizing NGOs to register and manage their restoration efforts.
+### 1. 📜 On-Chain Carbon Credit Retirement & ESG Certificates
+- Token holders can burn ERC-1155 credits directly on-chain (`retireCredits`) to permanently record carbon offset compliance.
+- Automatically generates verifiable, downloadable **Certificates of Carbon Sequestration** with transaction hashes, QR code validation, and beneficiary details for corporate ESG reporting.
 
-Verifiable Data Storage: All project documentation, including baseline imagery and MRV data, is uploaded to the InterPlanetary File System (IPFS). The immutable IPFS hash is stored on-chain, ensuring that the verified data can never be altered.
+### 2. 🤖 Gemini AI Satellite Telemetry (dMRV)
+- Multi-modal AI analysis of aerial & satellite mangrove imagery calculating **sapling density**, **NDVI canopy health**, **environmental anomaly detection**, and **CO₂ sequestration estimation**.
+- Includes automatic fallback simulation mode for seamless offline or local development.
 
-End-to-End MRV Workflow: The dApp provides a complete lifecycle management tool for projects, covering registration, MRV submission, and a dedicated verification page for the admin.
+### 3. 🏪 DeFi Blue Carbon Marketplace with Secondary Royalties
+- ERC-1155 carbon credit marketplace with automated 5% secondary sales royalty split direct to coastal project owner NGO wallets.
+- Supports fractional trading and multi-currency token settlement.
 
-Tokenized Carbon Credits (ERC-1155): Upon successful verification, the smart contract mints unique ERC-1155 tokens (BLC - Blue Ledger Carbon) directly to the NGO's wallet, representing a fully traceable and verifiable carbon credit.
+### 4. 🗺️ Interactive GIS Geospatial Map
+- Leaflet map integration with ESRI World Imagery satellite layers, mangrove delta location tags, and real-time project status popups.
 
-Public Transparency Portal: A publicly accessible registry showcases all verified projects and their complete on-chain history, building trust with stakeholders and potential investors.
+### 5. 🛡️ Foundry Smart Contract Test Suite
+- Comprehensive smart contract unit and integration test coverage (`BlueLedger.t.sol`) validating project registration, MRV submissions, verification, token minting, marketplace sales, and credit retirement.
 
-Future Vision: AI-Powered Verification
+---
 
-The platform is designed to integrate an AI-powered verification assistant. The current UI includes a static demonstration of this future capability, showcasing how AI will be used to analyze satellite or drone imagery to provide data-driven insights on key metrics like sapling counts, canopy health, and environmental anomalies.
+## 🏗️ Architecture Overview
 
+```
+ ┌─────────────────────────────────────────────────────────┐
+ │                   Blue Ledger Frontend                  │
+ │      React • Vite • Wagmi • RainbowKit • Tailwind CSS    │
+ └────────────────────────────┬────────────────────────────┘
+                              │
+               ┌──────────────┴──────────────┐
+               ▼                             ▼
+ ┌───────────────────────────┐ ┌───────────────────────────┐
+ │   Polygon Smart Contracts │ │   AI Verifier Backend     │
+ │  BlueLedger (ERC-1155)    │ │   Express • Gemini API    │
+ │  BlueLedgerMarketplace    │ │   IPFS Gateway Ingestion  │
+ └───────────────────────────┘ └───────────────────────────┘
+```
+
+---
+
+## 🚀 Quick Start & Local Execution
+
+### Prerequisites
+- [Node.js v18+](https://nodejs.org/)
+- [Foundry (forge, anvil)](https://getfoundry.sh/)
+
+### 1. Environment Setup
+
+Create `.env` file inside `blue-ledger-ai-verifier/backend/.env`:
+```env
+PORT=3001
+GEMINI_API_KEY=your_gemini_api_key_here
+```
+
+### 2. One-Click Launch Script
+Make scripts executable and start local dev environment:
+```bash
+chmod +x start-dev.sh deploy-all.sh
+./start-dev.sh
+```
+
+This launches:
+- **Frontend dApp:** [http://localhost:5173](http://localhost:5173)
+- **AI Verifier Backend:** [http://localhost:3001](http://localhost:3001)
+
+---
+
+## 🧪 Smart Contract Testing (Foundry)
+
+Run the Foundry test suite:
+```bash
+cd contracts
+forge test -vv
+```
+
+To deploy contracts to Polygon Amoy Testnet:
+```bash
+PRIVATE_KEY=your_private_key RPC_URL=https://rpc-amoy.polygon.technology ../deploy-all.sh
+```
+
+---
+
+## 📄 License
+SPDX-License-Identifier: MIT

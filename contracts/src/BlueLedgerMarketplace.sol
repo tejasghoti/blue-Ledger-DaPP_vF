@@ -25,9 +25,9 @@ contract BlueLedgerMarketplace is Ownable, IERC1155Receiver, ReentrancyGuard {
     mapping(uint256 => uint256) public activeListingIdForProject;
 
     uint256 public platformFeePercentage;
+    uint256 public royaltyFeePercentage; // 5% royalty for coastal NGO project owners
 
     event CreditsListed(uint256 indexed listingId, uint256 indexed projectId, address indexed seller, uint256 quantity, uint256 pricePerUnit);
-    // ✅ FIX: Removed 'indexed' from 'listingId' to meet the 3-indexed-argument limit.
     event CreditsSold(uint256 listingId, uint256 indexed projectId, address indexed seller, address indexed buyer, uint256 quantity, uint256 totalPrice);
     event ListingCancelled(uint256 indexed listingId, uint256 indexed projectId);
 
@@ -35,6 +35,7 @@ contract BlueLedgerMarketplace is Ownable, IERC1155Receiver, ReentrancyGuard {
         blueLedgerContract = IERC1155(_blueLedgerAddress);
         paymentToken = IERC20(_paymentTokenAddress);
         platformFeePercentage = 250; // 2.5%
+        royaltyFeePercentage = 500;  // 5.0%
     }
 
     function onERC1155Received(address, address from, uint256 id, uint256 value, bytes memory data) public virtual override returns (bytes4) {
@@ -73,9 +74,10 @@ contract BlueLedgerMarketplace is Ownable, IERC1155Receiver, ReentrancyGuard {
 
         uint256 totalPrice = _quantityToBuy * listing.pricePerUnit;
         uint256 fee = (totalPrice * platformFeePercentage) / 10000;
-        uint256 sellerProceeds = totalPrice - fee;
+        uint256 royalty = (totalPrice * royaltyFeePercentage) / 10000;
+        uint256 sellerProceeds = totalPrice - fee - royalty;
 
-        require(paymentToken.transferFrom(msg.sender, listing.seller, sellerProceeds), "Payment to seller failed");
+        require(paymentToken.transferFrom(msg.sender, listing.seller, sellerProceeds + royalty), "Payment to seller failed");
         require(paymentToken.transferFrom(msg.sender, owner(), fee), "Payment of platform fee failed");
         
         blueLedgerContract.safeTransferFrom(address(this), msg.sender, listing.projectId, _quantityToBuy, "");
