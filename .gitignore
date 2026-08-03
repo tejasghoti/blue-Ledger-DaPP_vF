@@ -20,12 +20,19 @@ lerna-debug.log*
 
 
 # =============================================================================
-# SECURITY - Environment Variables (Crucial!)
+# SECURITY - Environment Variables & Keys (Crucial!)
 # =============================================================================
-# This single rule ignores all .env files in any folder (root, frontend, contracts)
 **/.env
 **/.env.local
-**/.env.*.local
+**/.env.production
+**/.env.development
+**/.env.*
+!**/.env.example
+*.pem
+*.key
+*.keystore
+id_rsa
+id_ecdsa
 
 
 # =============================================================================

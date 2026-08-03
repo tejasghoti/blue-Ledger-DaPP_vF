@@ -7,7 +7,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-const GEMINI_KEY = process.env.GEMINI_API_KEY || "AIzaSyCUbPh9D7Kt8G15FAutSIxGpCVdR7m1uJk";
+const GEMINI_KEY = process.env.GEMINI_API_KEY;
 const genAI = GEMINI_KEY ? new GoogleGenerativeAI(GEMINI_KEY) : null;
 
 async function urlToGenerativePart(url) {
