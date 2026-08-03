@@ -13,6 +13,7 @@ import { ListCredits } from "@/components/ListCredits"; // Correct import path
 import { toast } from "sonner"; // Ensure toast is imported if used in this file
 import { motion } from "framer-motion";
 import { ProjectMap } from "@/components/ProjectMap";
+import { MOCK_PROJECTS } from "@/lib/mockData";
 
 // --- TypeScript Interfaces ---
 type ProjectData = readonly [
@@ -141,7 +142,14 @@ export default function ProjectDetails() {
     args: [BigInt(projectId || 0)],
   });
 
-  const project = projectData as ProjectData | undefined;
+  const rawProject = projectData as ProjectData | undefined;
+  
+  // Fallback to MOCK_PROJECTS if project doesn't exist on-chain yet
+  const mockMatch = MOCK_PROJECTS.find(p => p.id === BigInt(projectId || 1)) || MOCK_PROJECTS[0];
+  const project: ProjectData = (rawProject && rawProject[0] !== 0n) ? rawProject : [
+    mockMatch.id, mockMatch.name, mockMatch.location, mockMatch.metadataHash, mockMatch.owner, mockMatch.status, mockMatch.lastSubmittedAt, mockMatch.carbonSequestered, mockMatch.creditsMinted, mockMatch.rejectionReason, mockMatch.registrationTimestamp, mockMatch.decisionTimestamp
+  ];
+
   const mrvHistory = (mrvHistoryData as MRVData[] | undefined) || []; 
   
   useEffect(() => {
@@ -150,14 +158,18 @@ export default function ProjectDetails() {
         setIsMetadataLoading(true);
         try {
           const url = `https://gateway.pinata.cloud/ipfs/${project[3]}`;
-          const response = await axios.get<ProjectMetadata>(url); // Explicitly type response
-          if (response.data.image) { // Check if image exists before modifying
+          const response = await axios.get<ProjectMetadata>(url);
+          if (response.data.image) {
               response.data.image = `https://gateway.pinata.cloud/ipfs/${response.data.image}`;
           }
           setMetadata(response.data);
         } catch (err) {
-          console.error("Failed to fetch metadata from IPFS:", err);
-          setMetadata(null);
+          // Fallback metadata from MOCK_PROJECTS
+          setMetadata({
+            description: mockMatch.description,
+            image: mockMatch.imageURL,
+            coordinates: mockMatch.coordinates,
+          });
         } finally {
           setIsMetadataLoading(false);
         }

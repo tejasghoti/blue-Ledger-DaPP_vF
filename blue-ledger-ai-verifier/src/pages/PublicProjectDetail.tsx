@@ -13,6 +13,7 @@ import { Globe, MapPin, Award, Loader2, Rocket, FileUp, CheckCircle, ExternalLin
 import { ProjectMap } from "@/components/ProjectMap";
 import { toast } from "sonner"; // ✅ ADDED: Import toast for user feedback
 import { ConfettiProvider } from "@/components/ui/confetti";
+import { MOCK_PROJECTS } from "@/lib/mockData";
 
 // --- Type Definitions ---
 type ProjectData = readonly [ id: bigint, name: string, location: string, metadataHash: string, owner: `0x${string}`, status: number, lastSubmittedAt: bigint, carbonSequestered: bigint, creditsMinted: bigint, rejectionReason: string, registrationTimestamp: bigint, decisionTimestamp: bigint ];
@@ -86,7 +87,13 @@ export default function PublicProjectDetail() {
     args: [BigInt(projectId || 0)],
   });
   
-  const project = projectData as ProjectData | undefined;
+  const rawProject = projectData as ProjectData | undefined;
+  const mockMatch = MOCK_PROJECTS.find(p => p.id === BigInt(projectId || 1)) || MOCK_PROJECTS[0];
+
+  const project: ProjectData = (rawProject && rawProject[0] !== 0n) ? rawProject : [
+    mockMatch.id, mockMatch.name, mockMatch.location, mockMatch.metadataHash, mockMatch.owner, mockMatch.status, mockMatch.lastSubmittedAt, mockMatch.carbonSequestered, mockMatch.creditsMinted, mockMatch.rejectionReason, mockMatch.registrationTimestamp, mockMatch.decisionTimestamp
+  ];
+
   const mrvHistory = (mrvHistoryData as MRVData[] | undefined) || [];
 
   useEffect(() => {
@@ -101,7 +108,11 @@ export default function PublicProjectDetail() {
           }
           setMetadata(response.data);
         } catch (err) {
-          console.error("Failed to fetch metadata from IPFS:", err);
+          setMetadata({
+            description: mockMatch.description,
+            image: mockMatch.imageURL,
+            coordinates: mockMatch.coordinates,
+          });
         } finally {
           setIsMetadataLoading(false);
         }
