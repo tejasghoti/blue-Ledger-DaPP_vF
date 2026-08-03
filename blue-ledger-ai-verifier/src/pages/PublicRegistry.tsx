@@ -6,6 +6,7 @@ import { motion } from 'framer-motion';
 import { WorldMap } from '@/components/ui/WorldMap';
 import axios from 'axios';
 import { LoaderThree } from '@/components/ui/loader'; 
+import { MOCK_PROJECTS } from "@/lib/mockData";
 // Define the core Project interface as it comes from the contract
 // This interface MUST include all properties that PublicProjectCard expects.
 interface Project {
@@ -80,10 +81,11 @@ export function PublicRegistry() {
 
   const isLoading = isContractLoading || isMetadataLoading;
 
-  // ✅ NEW: Filter projects to only show verified ones (status === 2)
+  // Filter projects to show verified ones (status === 2), fallback to MOCK_PROJECTS for demo
   const verifiedProjectsWithCoords = useMemo(() => {
-    // Ensure 'status' is checked; assuming '2' is the verified status
-    return allProjectsWithCoords.filter(p => p.status === 2);
+    const verified = allProjectsWithCoords.filter(p => p.status === 2);
+    if (verified.length > 0) return verified;
+    return MOCK_PROJECTS.filter(p => p.status === 2) as unknown as ProjectWithCoords[];
   }, [allProjectsWithCoords]);
 
   // Prepare pins for the WorldMap component from only verified projects

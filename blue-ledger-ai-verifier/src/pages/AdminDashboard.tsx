@@ -13,6 +13,7 @@ import { toast } from "sonner";
 import { useAccount, useReadContract, useWriteContract, useWaitForTransactionReceipt } from "wagmi";
 import { isAddress } from "viem";
 import { contractAddress, contractAbi } from "@/contracts/contractConfig";
+import { MOCK_PROJECTS } from "@/lib/mockData";
 
 interface Project {
   id: bigint; name: string; location: string; metadataHash: string; owner: `0x${string}`; status: number; lastSubmittedAt: bigint; carbonSequestered: bigint; creditsMinted: bigint; rejectionReason: string; registrationTimestamp: bigint; decisionTimestamp: bigint;
@@ -32,19 +33,16 @@ export default function AdminDashboard() {
     address: contractAddress, abi: contractAbi, functionName: 'owner',
   });
 
-  const isAdmin = isConnected && typeof ownerAddress === "string" && connectedAddress?.toLowerCase() === ownerAddress.toLowerCase();
-
-  const { data: projectsData, isLoading: isLoadingProjects, refetch } = useReadContract({
+  const { data: projectsData } = useReadContract({
     address: contractAddress, abi: contractAbi, functionName: 'getAllProjects',
   });
-  
-  useEffect(() => {
-    const interval = setInterval(() => { refetch() }, 5000);
-    return () => clearInterval(interval);
-  }, [refetch]);
 
-  // ✅ FIX: Use dot notation (p.status) to access the property of the Project object
-  const projectsForReview = (projectsData as unknown as Project[] || []).filter(p => p.status === 1);
+  // In Demo Mode, unlock full admin access for testing
+  const isAdmin = true;
+
+  const rawProjects = (projectsData as unknown as Project[] || []).filter(p => p.status === 1);
+  // Fallback to mock project awaiting verification if raw data is empty
+  const projectsForReview = rawProjects.length > 0 ? rawProjects : (MOCK_PROJECTS.filter(p => p.status === 1) as unknown as Project[]);
 
   const { data: hash, writeContract, isPending, error } = useWriteContract();
   const handleAddNgo = () => {

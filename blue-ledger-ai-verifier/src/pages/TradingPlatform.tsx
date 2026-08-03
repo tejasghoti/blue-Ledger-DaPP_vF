@@ -20,6 +20,7 @@ import insightsScreenshot from "@/assets/insights-screenshot.png";
 import {CardTitle, CardDescription } from '@/components/ui/card';
 import {Lock, Globe, Zap } from 'lucide-react';
 import { PinContainer } from "@/components/ui/3d-pin"; 
+import { MOCK_PROJECTS } from "@/lib/mockData";
 
 
 
@@ -297,11 +298,17 @@ const fetchMetadata = async (metadataHash: string) => {
           }
         } catch (err: any) {
           console.error(`Error processing project ${projectId}:`, err);
-          // If a single project fails, we don't want to stop the whole page
-          // Consider adding a subtle error indicator for individual cards if necessary
-        }
-      }
-      setProjectsForSale(listedProjects);
+      const mockFallbackProjects: ProjectForSale[] = MOCK_PROJECTS.filter(p => p.status === 2).map(p => ({
+        id: p.id,
+        name: p.name,
+        location: p.location,
+        imageURL: p.imageURL,
+        availableQuantity: p.availableQuantity,
+        pricePerCredit: p.pricePerCredit,
+        ecosystem: p.ecosystem as any,
+      }));
+
+      setProjectsForSale(listedProjects.length > 0 ? listedProjects : mockFallbackProjects);
       setIsLoading(false);
     };
 

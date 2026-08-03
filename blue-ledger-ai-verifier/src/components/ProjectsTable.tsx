@@ -17,6 +17,7 @@ import { useNavigate } from "react-router-dom"; // --- 1. Import useNavigate ---
 import { useReadContract } from "wagmi";
 import { blueLedgerAddress } from "@/contracts/contractAddress";
 import BlueLedgerAbi from "@/contracts/BlueLedger.json";
+import { MOCK_PROJECTS } from "@/lib/mockData";
 
 // --- TypeScript Interfaces ---
 interface Project {
@@ -45,18 +46,19 @@ const statusLabels: Record<typeof statusEnum[number], string> = {
 };
 
 // --- Component Definition ---
-export function ProjectsTable() { // --- 2. Remove props ---
-  const navigate = useNavigate(); // --- 3. Initialize the navigate function ---
+export function ProjectsTable() {
+  const navigate = useNavigate();
 
-  const { data: projectsData, isLoading, isError } = useReadContract({
+  const { data: projectsData, isLoading } = useReadContract({
     address: blueLedgerAddress,
-    abi: BlueLedgerAbi.abi, // --- Proactive TypeScript fix ---
+    abi: BlueLedgerAbi.abi,
     functionName: 'getAllProjects',
     query: { refetchInterval: 5000 },
   });
 
-  const projects: Project[] = (projectsData as Project[] || []).filter(p => p.id !== 0n);
-  const isProjectDataEmpty = !isLoading && projects.length === 0;
+  const rawProjects: Project[] = (projectsData as Project[] || []).filter(p => p.id !== 0n);
+  // Fallback to rich mock projects for seamless resume / demo visualization
+  const projects = rawProjects.length > 0 ? rawProjects : MOCK_PROJECTS;
 
   // --- 4. Create the navigation handler ---
   const handleViewProject = (projectId: string) => {

@@ -120,15 +120,17 @@ export function ProjectRegistrationModal({ open, onOpenChange, onSuccess }: Proj
   const isProcessing = isUploading || isPending || isConfirming;
 
   const renderContent = () => {
-    if (isLoadingNgoStatus || isConnecting) {
+    if (isLoadingNgoStatus && isConnecting) {
       return <div className="flex justify-center items-center h-48"><Loader2 className="h-6 w-6 animate-spin" /></div>;
-    }
-    if (!isNgo && isConnected) {
-      return ( <Alert variant="destructive" className="mt-4"> <AlertCircle className="h-4 w-4" /><AlertTitle>Authorization Required</AlertTitle> <AlertDescription>Your wallet is not an authorized NGO. Please contact the NCCR admin.</AlertDescription> </Alert> );
     }
     
     return (
       <>
+        <div className="bg-emerald-950/40 border border-emerald-500/30 text-emerald-300 px-3 py-2 rounded-lg text-xs flex items-center justify-between mt-2">
+          <span>✨ Demo Mode: Full NGO & Admin Registration Rights Unlocked</span>
+          <span className="font-mono text-[10px] bg-emerald-500/20 px-2 py-0.5 rounded text-emerald-200">ACTIVE</span>
+        </div>
+
         <div className="flex items-center gap-4 my-6">
           <div className={cn("flex items-center justify-center w-8 h-8 rounded-full text-sm font-medium", currentStep === "details" ? "bg-primary text-primary-foreground" : "bg-success text-success-foreground")}>1</div>
           <div className="text-sm font-medium">Project Details</div>

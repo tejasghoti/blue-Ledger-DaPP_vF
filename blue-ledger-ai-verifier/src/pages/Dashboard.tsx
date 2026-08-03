@@ -10,6 +10,7 @@ import { contractAddress, contractAbi } from "@/contracts/contractConfig";
 
 // ✅ Import CometCard here
 import { CometCard } from "@/components/ui/CometCard"; 
+import { MOCK_PROJECTS } from "@/lib/mockData";
 
 // Define the TypeScript type to match your UPDATED Project struct in Solidity
 // This interface MUST include all properties that StatsCard or other consuming
@@ -47,13 +48,13 @@ export default function Dashboard() {
 
   // Calculate all stats in one place for efficiency
   const stats = useMemo(() => {
-    const projects = (allProjects as unknown as Project[]) ?? [];
+    const rawProjects = (allProjects as unknown as Project[]) ?? [];
+    const projects = rawProjects.length > 0 ? rawProjects : (MOCK_PROJECTS as unknown as Project[]);
 
     const totalProjects = projects.length;
     const pendingVerification = projects.filter(p => p.status === 1).length;
 
     const carbonSequestered = projects.reduce((acc, p) => {
-      // Ensure p.carbonSequestered is treated as bigint if it exists
       return acc + (p.carbonSequestered || 0n);
     }, 0n); 
 

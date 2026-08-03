@@ -1,7 +1,6 @@
 {
-  "buildCommand": "npm --prefix blue-ledger-ai-verifier install && npm --prefix blue-ledger-ai-verifier run build",
+  "buildCommand": "cd blue-ledger-ai-verifier && npm install && npm run build",
   "outputDirectory": "blue-ledger-ai-verifier/dist",
-  "framework": "vite",
   "rewrites": [
     {
       "source": "/api/(.*)",
